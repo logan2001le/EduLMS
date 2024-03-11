@@ -4,7 +4,7 @@ const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'edutrack'
+    database: 'edutrack1'
 });
 
 module.exports = db;
