@@ -41,7 +41,45 @@ const ChangePassword = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const Profile = lazy(() => {
+    return Promise.all([
+        import('../pages/Profile/profile'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
 
+const ResetPassword = lazy(() => {
+    return Promise.all([
+        import('../pages/ResetPassword/resetPassword'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+const ContractManagement = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/ContractManagement/contractManagement'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+const Notification = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/Notification/notification'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+const DashBoard = lazy(() => {
+    return Promise.all([
+        import('../pages/DashBoard/dashBoard'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
 
 const RouterURL = withRouter(({ location }) => {
 
@@ -57,7 +95,7 @@ const RouterURL = withRouter(({ location }) => {
                 <Login />
             </PublicRoute>
             <PublicRoute exact path="/reset-password/:id">
-               
+                <ResetPassword />
             </PublicRoute>
         </div>
     )
@@ -75,7 +113,11 @@ const RouterURL = withRouter(({ location }) => {
                             </Suspense>
                         </PrivateRoute>
 
-                     
+                        <PrivateRoute exact path="/profile">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <Profile />
+                            </Suspense>
+                        </PrivateRoute>
 
                         <PrivateRoute exact path="/change-password/:id">
                             <Suspense fallback={<LoadingScreen />}>
@@ -83,6 +125,23 @@ const RouterURL = withRouter(({ location }) => {
                             </Suspense>
                         </PrivateRoute>
 
+                        <PrivateRoute exact path="/contracts-management">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <ContractManagement />
+                            </Suspense>
+                        </PrivateRoute>
+
+                        <PrivateRoute exact path="/notifications">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <Notification />
+                            </Suspense>
+                        </PrivateRoute>
+                        
+                        <PrivateRoute exact path="/dash-board">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <DashBoard />
+                            </Suspense>
+                        </PrivateRoute>
                         
                         <PrivateRoute exact path="/notfound">
                             <NotFound />
@@ -106,21 +165,37 @@ const RouterURL = withRouter(({ location }) => {
                         <LoginContainer />
                     </Route>
 
-                   
+                    <Route exact path="/reset-password/:id">
+                        <LoginContainer />
+                    </Route>
                     
-            
+                    <Route exact path="/profile">
+                        <DefaultContainer />
+                    </Route>
 
                     <Route exact path="/change-password/:id">
                         <DefaultContainer />
                     </Route>
 
-                   
+                    <Route exact path="/dash-board">
+                        <DefaultContainer />
+                    </Route>
 
                     <Route exact path="/account-management">
                         <DefaultContainer />
                     </Route>
 
-                   
+                    <Route exact path="/contracts-management">
+                        <DefaultContainer />
+                    </Route>
+
+                    <Route exact path="/notifications">
+                        <DefaultContainer />
+                    </Route>
+
+                    <Route exact path="/dash-board">
+                        <DefaultContainer />
+                    </Route>
                     
                     
                     <Route>
