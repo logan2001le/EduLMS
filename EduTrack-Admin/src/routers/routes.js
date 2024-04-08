@@ -81,6 +81,14 @@ const DashBoard = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const DetailsClass = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/DetailsClass/detailsClasss'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 const RouterURL = withRouter(({ location }) => {
 
 
@@ -142,6 +150,12 @@ const RouterURL = withRouter(({ location }) => {
                                 <DashBoard />
                             </Suspense>
                         </PrivateRoute>
+
+                        <PrivateRoute exact path="/details-class/:id">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <DetailsClass />
+                            </Suspense>
+                        </PrivateRoute>
                         
                         <PrivateRoute exact path="/notfound">
                             <NotFound />
@@ -167,6 +181,10 @@ const RouterURL = withRouter(({ location }) => {
 
                     <Route exact path="/reset-password/:id">
                         <LoginContainer />
+                    </Route>
+
+                    <Route exact path="/details-class/:id">
+                        <DefaultContainer />
                     </Route>
                     
                     <Route exact path="/profile">

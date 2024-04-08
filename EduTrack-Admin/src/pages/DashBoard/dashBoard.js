@@ -15,25 +15,46 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import dashBoardApi from "../../apis/dashBoardApi";
+import userApi from "../../apis/userApi";
+
 import "./dashBoard.css";
 
 
 const DashBoard = () => {
     const [statisticList, setStatisticList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [total, setTotalList] = useState();
-    const [data, setData] = useState(null);
+    const [teachers, setTeachers] = useState([]);
+    const [students, setStudents] = useState([]);
 
+    const countUsersByRole = (userList) => {
+        const counts = {
+          students: 0,
+          teachers: 0
+        };
+      
+        userList.forEach(user => {
+          if (user.role === 'isStudent') {
+            counts.students++;
+          } else if (user.role === 'isTeacher') {
+            counts.teachers++;
+          }
+        });
+      
+        return counts;
+      };
 
     useEffect(() => {
         (async () => {
             try {
                 await dashBoardApi.getAssetStatistics().then((res) => {
                     console.log(res);
-                    setTotalList(res)
                     setStatisticList(res);
-                    setData(res.data.data);
-                    setLoading(false);
+                });
+
+                await userApi.listUserByAdmin().then((res) => {
+                    console.log(res);
+                    const { students, teachers } = countUsersByRole(res.data);
+                    setStudents(students);
+                    setTeachers(teachers);
                 });
             } catch (error) {
                 console.log('Failed to fetch event list:' + error);
@@ -61,7 +82,7 @@ const DashBoard = () => {
                                 <div className='card_number'>
                                     <div>
                                         <div className='number_total'>{statisticList?.userCount}</div>
-                                        <div className='title_total'>Number of Users</div>
+                                        <div className='title_total'>Số thành viên</div>
                                     </div>
                                     <div>
                                         <ContactsTwoTone style={{ fontSize: 48 }} />
@@ -73,8 +94,8 @@ const DashBoard = () => {
                             <Card className="card_total" bordered={false}>
                                 <div className='card_number'>
                                     <div>
-                                        <div className='number_total'>{statisticList?.eventHistoryCount ? statisticList?.eventHistoryCount : 0}</div>
-                                        <div className='title_total'>Number of Teachers</div>
+                                        <div className='number_total'>{teachers ? teachers : 0}</div>
+                                        <div className='title_total'>Số giáo viên</div>
                                     </div>
                                     <div>
                                         <NotificationTwoTone style={{ fontSize: 48 }} />
@@ -87,8 +108,8 @@ const DashBoard = () => {
                             <Card className="card_total" bordered={false}>
                                 <div className='card_number'>
                                     <div>
-                                        <div className='number_total'>{statisticList?.meetingParticipantsCount ? statisticList?.meetingParticipantsCount : 0}</div>
-                                        <div className='title_total'>Number of Students</div>
+                                        <div className='number_total'>{students ? students : 0}</div>
+                                        <div className='title_total'>Số sinh viên</div>
                                     </div>
                                     <div>
                                         <EnvironmentTwoTone style={{ fontSize: 48 }} />

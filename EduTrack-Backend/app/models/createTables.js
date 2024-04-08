@@ -62,8 +62,7 @@ const createTables = async () => {
             value DECIMAL(10, 2),
             status VARCHAR(255) DEFAULT 'active',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (vendor_id) REFERENCES vendors(id)
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
         `);
 
@@ -73,6 +72,23 @@ const createTables = async () => {
             //  await db.execute(`
             //  ALTER TABLE contracts
             //  ADD COLUMN file_url VARCHAR(255);
+            //  `);
+
+            //   await db.execute(`
+            //   ALTER TABLE contracts
+            //   ADD COLUMN teacher_id INT,
+            //   ADD FOREIGN KEY (teacher_id) REFERENCES users(id);
+              
+            //  `);
+
+            //    await db.execute(`
+            //    CREATE TABLE IF NOT EXISTS contract_students (
+            //     id INT AUTO_INCREMENT PRIMARY KEY,
+            //     contract_id INT NOT NULL,
+            //     student_id INT NOT NULL,
+            //     FOREIGN KEY (contract_id) REFERENCES contracts(id),
+            //     FOREIGN KEY (student_id) REFERENCES users(id)
+            // );
             //  `);
 
     } catch (error) {

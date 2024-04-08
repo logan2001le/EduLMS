@@ -22,5 +22,10 @@ router.get('/', verifyToken.checkLogin, contractController.getAllContracts);
 // Route để lấy thông tin hợp đồng theo ID
 router.get('/:id', verifyToken.checkLogin, contractController.getContractById);
 
+router.post('/students/:id', verifyToken.checkLogin, contractController.addStudentToContract);
+
+router.post('/teachers/:id', verifyToken.checkLogin, contractController.addTeacherToContract);
+
+router.get('/students/:id', verifyToken.checkLogin, contractController.getAllStudentsInContract);
 
 module.exports = router;

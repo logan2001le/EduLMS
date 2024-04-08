@@ -24,8 +24,8 @@ const Login = () => {
           (async () => {
             try {
               console.log(response);
-              if (response.user.role === "isAdmin" && response.user.status !== "noactive") {
-                history.push("/dash-board");
+              if (response.user.status !== "noactive") {
+                history.push("/contracts-management");
               } else {
                 notification["error"]({
                   message: `Thông báo`,

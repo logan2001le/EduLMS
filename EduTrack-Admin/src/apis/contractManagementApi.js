@@ -54,7 +54,37 @@ const contractManagementApi = {
         } catch (error) {
             throw error;
         }
-    },  
+    },
+    async addTeacherToContract(contractId, teacherId) {
+        const url = `contracts/teachers/${contractId}`; 
+        try {
+            const response = await axiosClient.post(url, { teacherId });
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+    
+    async addStudentToContract(contractId, studentId) {
+        const url = `contracts/students/${contractId}`;
+        try {
+            const response = await axiosClient.post(url, { studentId });
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async getAllStudentsInContract(contractId) {
+        const url = `contracts/students/${contractId}`;
+        try {
+            const response = await axiosClient.get(url);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+    
 }
 
 export default contractManagementApi;

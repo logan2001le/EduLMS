@@ -3,7 +3,9 @@ import {
     EditOutlined,
     HomeOutlined,
     PlusOutlined,
-    ShoppingOutlined
+    ShoppingOutlined,
+    FormOutlined,
+    EyeOutlined
 } from '@ant-design/icons';
 import { PageHeader } from '@ant-design/pro-layout';
 import {
@@ -20,7 +22,7 @@ import {
     notification,
     Select,
     DatePicker,
-    InputNumber
+    InputNumber,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import contractManagementApi from "../../../apis/contractManagementApi";
@@ -28,8 +30,10 @@ import "./contractManagement.css";
 import dayjs from 'dayjs';
 import moment from 'moment';
 import uploadFileApi from '../../../apis/uploadFileApi';
+import { getItemFromLocalStorage } from '../../../apis/storageService';
+import { useHistory } from "react-router-dom";
 
-const { Option } = Select;
+const { TextArea } = Input;
 
 const ContractManagement = () => {
 
@@ -42,6 +46,7 @@ const ContractManagement = () => {
     const [form2] = Form.useForm();
     const [id, setId] = useState();
     const [file, setUploadFile] = useState();
+    let history = useHistory();
 
     const showModal = () => {
         setOpenModalCreate(true);
@@ -52,7 +57,7 @@ const ContractManagement = () => {
         try {
             const startDate = values.start_date;
             const endDate = values.end_date;
-    
+
             // Kiểm tra ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu
             if (endDate.isBefore(startDate)) {
                 notification.error({
@@ -60,7 +65,7 @@ const ContractManagement = () => {
                     description: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
                 });
                 setLoading(false);
-                return; 
+                return;
             }
 
             const categoryList = {
@@ -100,7 +105,7 @@ const ContractManagement = () => {
         try {
             const startDate = values.start_date;
             const endDate = values.end_date;
-    
+
             // Kiểm tra ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu
             if (endDate.isBefore(startDate)) {
                 notification.error({
@@ -108,7 +113,7 @@ const ContractManagement = () => {
                     description: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
                 });
                 setLoading(false);
-                return; 
+                return;
             }
 
             const categoryList = {
@@ -142,6 +147,59 @@ const ContractManagement = () => {
             throw error;
         }
     }
+
+    const handleJoinTeacherClass = async (contractId) => {
+        console.log(contractId);
+        const teacherId = getItemFromLocalStorage("user").id;
+        try {
+            // Thực hiện gọi API addTeacherToContract với contractId
+            const response = await contractManagementApi.addTeacherToContract(contractId, teacherId);
+            if (response) {
+                notification["success"]({
+                    message: `Thông báo`,
+                    description:
+                        'Tham gia lớp thành công!',
+
+                });
+            }
+            // Xử lý kết quả trả về nếu cần
+            console.log(response.data.message); // In ra thông báo từ server nếu muốn
+
+            // Nếu bạn muốn thực hiện các hành động khác sau khi thêm giáo viên vào hợp đồng thành công, bạn có thể thực hiện ở đây
+        } catch (error) {
+            // Xử lý khi có lỗi xảy ra
+            console.error('Đã xảy ra lỗi khi tham gia lớp:', error);
+        }
+    }
+
+    const handleJoinStudentClass = async (contractId) => {
+        console.log(contractId);
+        const teacherId = getItemFromLocalStorage("user").id;
+        try {
+            // Thực hiện gọi API addTeacherToContract với contractId
+            const response = await contractManagementApi.addStudentToContract(contractId, teacherId);
+            if (response) {
+                notification["success"]({
+                    message: `Thông báo`,
+                    description:
+                        'Tham gia lớp thành công!',
+
+                });
+            }
+            // Xử lý kết quả trả về nếu cần
+            console.log(response.data.message); 
+
+        } catch (error) {
+            // Xử lý khi có lỗi xảy ra
+            console.error('Đã xảy ra lỗi khi tham gia lớp:', error);
+        }
+    }
+
+    const handleViewClass = (contractId) => {
+        history.push("/details-class/" + contractId);
+
+    }
+
 
     const handleCancel = (type) => {
         if (type === "create") {
@@ -243,6 +301,16 @@ const ContractManagement = () => {
 
         },
         {
+            title: 'Tên giáo viên',
+            dataIndex: 'teacher_username',
+            key: 'teacher_username',
+        },
+        {
+            title: 'Số điện thoại GV',
+            dataIndex: 'teacher_phone',
+            key: 'teacher_phone',
+        },
+        {
             title: 'Mô tả',
             dataIndex: 'description',
             key: 'description',
@@ -273,34 +341,69 @@ const ContractManagement = () => {
             render: (text, record) => (
                 <div>
                     <Row>
-                        <Button
-                            size="small"
-                            icon={<EditOutlined />}
-                            style={{ width: 150, borderRadius: 15, height: 30 }}
-                            onClick={() => handleEditCategory(record.id)}
-                        >
-                            {"Chỉnh sửa"}
-                        </Button>
-                        <div style={{ marginLeft: 10 }}>
-                            <Popconfirm
-                                title="Bạn có chắc chắn xóa lớp này?"
-                                onConfirm={() => handleDeleteCategory(record.id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
+                        {getItemFromLocalStorage("user").role == "isAdmin" ? (
+                            <>
                                 <Button
                                     size="small"
-                                    icon={<DeleteOutlined />}
+                                    icon={<EditOutlined />}
                                     style={{ width: 150, borderRadius: 15, height: 30 }}
+                                    onClick={() => handleEditCategory(record.id)}
                                 >
-                                    {"Xóa"}
+                                    {"Chỉnh sửa"}
                                 </Button>
-                            </Popconfirm>
-                        </div>
+                                <div style={{ marginLeft: 10 }}>
+                                    <Popconfirm
+                                        title="Bạn có chắc chắn xóa lớp này?"
+                                        onConfirm={() => handleDeleteCategory(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button
+                                            size="small"
+                                            icon={<DeleteOutlined />}
+                                            style={{ width: 150, borderRadius: 15, height: 30 }}
+                                        >
+                                            {"Xóa"}
+                                        </Button>
+                                    </Popconfirm>
+                                </div>
+                            </>
+                        ) : getItemFromLocalStorage("user").role == "isTeacher" ? (
+                            <>
+                                <Button
+                                    size="small"
+                                    icon={<FormOutlined />}
+                                    style={{ width: 150, borderRadius: 15, height: 30 }}
+                                    onClick={() => handleJoinTeacherClass(record.id)}
+                                    disabled={record.teacher_id === getItemFromLocalStorage("user").id} // Kiểm tra nếu id bằng với teacher_id thì disable nút
+                                >
+                                    {"Tham gia lớp"}
+                                </Button>
+                                <Button
+                                    size="small"
+                                    icon={<EyeOutlined />}
+                                    style={{ width: 150, borderRadius: 15, height: 30, marginLeft: 10 }}
+                                    onClick={() => handleViewClass(record.id)}
+                                >
+                                    {"Xem"}
+                                </Button>
+                            </>
+                        ) : <>
+
+                            <Button
+                                size="small"
+                                icon={<EyeOutlined />}
+                                style={{ width: 150, borderRadius: 15, height: 30, marginLeft: 10 }}
+                                onClick={() => handleViewClass(record.id)}
+                            >
+                                {"Xem"}
+                            </Button>
+                        </>}
                     </Row>
                 </div>
             ),
-        },
+        }
+
     ];
 
     const handleChangeImage = async (e) => {
@@ -355,7 +458,7 @@ const ContractManagement = () => {
                                     <Col span="6">
                                         <Row justify="end">
                                             <Space>
-                                                <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Tạo lớp</Button>
+                                                {getItemFromLocalStorage("user").role == "isAdmin" ? <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Tạo lớp</Button> : null}
                                             </Space>
                                         </Row>
                                     </Col>
@@ -451,7 +554,7 @@ const ContractManagement = () => {
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <Input placeholder="Mô tả" />
+                                <TextArea placeholder="Mô tả" autoSize={{ minRows: 6, maxRows: 10 }} />
                             </Form.Item>
                             <Form.Item
                                 name="value"
@@ -575,7 +678,7 @@ const ContractManagement = () => {
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <Input placeholder="Mô tả" />
+                                <TextArea placeholder="Mô tả" autoSize={{ minRows: 6, maxRows: 10 }} />
                             </Form.Item>
                             <Form.Item
                                 name="value"
