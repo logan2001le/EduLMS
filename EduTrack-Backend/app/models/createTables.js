@@ -51,45 +51,62 @@ const createTables = async () => {
 
 
         // Tạo bảng "contracts" nếu chưa tồn tại
+        // await db.execute(`
+        // CREATE TABLE IF NOT EXISTS contracts (
+        //     id INT AUTO_INCREMENT PRIMARY KEY,
+        //     title VARCHAR(255) NOT NULL,
+        //     description TEXT,
+        //     start_date DATE,
+        //     end_date DATE,
+        //     value DECIMAL(10, 2),
+        //     status VARCHAR(255) DEFAULT 'active',
+        //     teacher_id
+        //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        //     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        // )
+        // `);
+
+        // console.log('Table "contracts" created or already exists.');
+
+        // Tạo bảng "contract_reviews" nếu chưa tồn tại
         await db.execute(`
-        CREATE TABLE IF NOT EXISTS contracts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            vendor_id INT,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            start_date DATE,
-            end_date DATE,
-            value DECIMAL(10, 2),
-            status VARCHAR(255) DEFAULT 'active',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )
-        `);
+CREATE TABLE IF NOT EXISTS contract_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contract_id INT NOT NULL,
+    student_id INT NOT NULL,
+    rating INT NOT NULL,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (contract_id) REFERENCES contracts(id),
+    FOREIGN KEY (student_id) REFERENCES users(id)
+)
+`);
+
 
         console.log('Table "contracts" created or already exists.');
 
-             // Tạo bảng "contracts" nếu chưa tồn tại
-            //  await db.execute(`
-            //  ALTER TABLE contracts
-            //  ADD COLUMN file_url VARCHAR(255);
-            //  `);
+        // Tạo bảng "contracts" nếu chưa tồn tại
+        //  await db.execute(`
+        //  ALTER TABLE contracts
+        //  ADD COLUMN file_url VARCHAR(255);
+        //  `);
 
-            //   await db.execute(`
-            //   ALTER TABLE contracts
-            //   ADD COLUMN teacher_id INT,
-            //   ADD FOREIGN KEY (teacher_id) REFERENCES users(id);
-              
-            //  `);
+        //   await db.execute(`
+        //   ALTER TABLE contracts
+        //   ADD COLUMN teacher_id INT,
+        //   ADD FOREIGN KEY (teacher_id) REFERENCES users(id);
 
-            //    await db.execute(`
-            //    CREATE TABLE IF NOT EXISTS contract_students (
-            //     id INT AUTO_INCREMENT PRIMARY KEY,
-            //     contract_id INT NOT NULL,
-            //     student_id INT NOT NULL,
-            //     FOREIGN KEY (contract_id) REFERENCES contracts(id),
-            //     FOREIGN KEY (student_id) REFERENCES users(id)
-            // );
-            //  `);
+        //  `);
+
+        //    await db.execute(`
+        //    CREATE TABLE IF NOT EXISTS contract_students (
+        //     id INT AUTO_INCREMENT PRIMARY KEY,
+        //     contract_id INT NOT NULL,
+        //     student_id INT NOT NULL,
+        //     FOREIGN KEY (contract_id) REFERENCES contracts(id),
+        //     FOREIGN KEY (student_id) REFERENCES users(id)
+        // );
+        //  `);
 
     } catch (error) {
         console.error('Error creating tables:', error);

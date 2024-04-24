@@ -4,6 +4,10 @@ const verifyToken = require('../utils/middleware');
 
 const router = express.Router();
 
+router.post('/reviews/:contractId', contractController.addReview);
+router.get('/reviews/:contractId', contractController.getReviews);
+
+
 // Route để tìm kiếm hợp đồng dựa trên các điều kiện
 router.get('/search', verifyToken.checkLogin, contractController.searchContracts);
 
