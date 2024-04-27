@@ -84,6 +84,26 @@ const contractManagementApi = {
             throw error;
         }
     },
+
+    async addReview(contractId, data) {
+        const url = `contracts/reviews/${contractId}`;
+        try {
+            const response = await axiosClient.post(url, data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async getReviews(contractId) {
+        const url = `contracts/reviews/${contractId}`;
+        try {
+            const response = await axiosClient.get(url);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
     
 }
 

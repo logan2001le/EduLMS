@@ -20,7 +20,7 @@ import {
     Spin,
     Table,
     notification,
-    Select,
+    Rate,
     DatePicker,
     InputNumber,
 } from 'antd';
@@ -38,7 +38,6 @@ const { TextArea } = Input;
 const ContractManagement = () => {
 
     const [category, setCategory] = useState([]);
-    const [categoryList, setCategoryList] = useState([]);
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const [openModalUpdate, setOpenModalUpdate] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -58,11 +57,11 @@ const ContractManagement = () => {
             const startDate = values.start_date;
             const endDate = values.end_date;
 
-            // Kiểm tra ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu
+            // Check if the end date is greater than or equal to the start date
             if (endDate.isBefore(startDate)) {
                 notification.error({
-                    message: 'Thông báo',
-                    description: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+                    message: 'Notification',
+                    description: 'End date must be greater than or equal to start date',
                 });
                 setLoading(false);
                 return;
@@ -79,16 +78,16 @@ const ContractManagement = () => {
             return contractManagementApi.createContract(categoryList).then(response => {
                 if (response === undefined) {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Tạo lớp thất bại',
+                            'Failed to create class',
                     });
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Tạo lớp thành công',
+                            'Class created successfully',
                     });
                     setOpenModalCreate(false);
                     handleCategoryList();
@@ -106,11 +105,11 @@ const ContractManagement = () => {
             const startDate = values.start_date;
             const endDate = values.end_date;
 
-            // Kiểm tra ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu
+            // Check if the end date is greater than or equal to the start date
             if (endDate.isBefore(startDate)) {
                 notification.error({
-                    message: 'Thông báo',
-                    description: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+                    message: 'Notification',
+                    description: 'End date must be greater than or equal to start date',
                 });
                 setLoading(false);
                 return;
@@ -127,16 +126,16 @@ const ContractManagement = () => {
             return contractManagementApi.updateContract(categoryList, id).then(response => {
                 if (response === undefined) {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Chỉnh sửa lớp thất bại',
+                            'Failed to edit class',
                     });
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Chỉnh sửa lớp thành công',
+                            'Class edited successfully',
                     });
                     handleCategoryList();
                     setOpenModalUpdate(false);
@@ -152,49 +151,41 @@ const ContractManagement = () => {
         console.log(contractId);
         const teacherId = getItemFromLocalStorage("user").id;
         try {
-            // Thực hiện gọi API addTeacherToContract với contractId
+            // Call API addTeacherToContract with contractId
             const response = await contractManagementApi.addTeacherToContract(contractId, teacherId);
             if (response) {
                 notification["success"]({
-                    message: `Thông báo`,
+                    message: `Notification`,
                     description:
-                        'Tham gia lớp thành công!',
+                        'Joined class successfully!',
 
                 });
             }
-            // Xử lý kết quả trả về nếu cần
-            console.log(response.data.message); // In ra thông báo từ server nếu muốn
-
-            // Nếu bạn muốn thực hiện các hành động khác sau khi thêm giáo viên vào hợp đồng thành công, bạn có thể thực hiện ở đây
         } catch (error) {
-            // Xử lý khi có lỗi xảy ra
-            console.error('Đã xảy ra lỗi khi tham gia lớp:', error);
+            console.error('An error occurred while joining the class:', error);
         }
     }
 
-    const handleJoinStudentClass = async (contractId) => {
-        console.log(contractId);
-        const teacherId = getItemFromLocalStorage("user").id;
+    const handleReviewsTeacherClass = async (data) => {
+        console.log(data);
+        const studentId = getItemFromLocalStorage("user").id;
         try {
-            // Thực hiện gọi API addTeacherToContract với contractId
-            const response = await contractManagementApi.addStudentToContract(contractId, teacherId);
+            // Call API addTeacherToContract with contractId
+            const response = await contractManagementApi.addReview(studentId, data);
             if (response) {
                 notification["success"]({
-                    message: `Thông báo`,
+                    message: `Notification`,
                     description:
-                        'Tham gia lớp thành công!',
+                        'Review submitted successfully!',
 
                 });
             }
-            // Xử lý kết quả trả về nếu cần
-            console.log(response.data.message); 
-
         } catch (error) {
-            // Xử lý khi có lỗi xảy ra
-            console.error('Đã xảy ra lỗi khi tham gia lớp:', error);
+            console.error('An error occurred while reviewing:', error);
         }
     }
 
+    
     const handleViewClass = (contractId) => {
         history.push("/details-class/" + contractId);
 
@@ -216,9 +207,8 @@ const ContractManagement = () => {
                 setCategory(res.data);
                 setLoading(false);
             });
-            ;
         } catch (error) {
-            console.log('Failed to fetch event list:' + error);
+            console.log('Failed to fetch class list:' + error);
         };
     }
 
@@ -228,18 +218,18 @@ const ContractManagement = () => {
             await contractManagementApi.deleteContract(id).then(response => {
                 if (response === undefined) {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Xóa lớp thất bại',
+                            'Failed to delete class',
 
                     });
                     setLoading(false);
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Xóa lớp thành công',
+                            'Class deleted successfully',
 
                     });
                     handleCategoryList();
@@ -249,7 +239,7 @@ const ContractManagement = () => {
             );
 
         } catch (error) {
-            console.log('Failed to fetch event list:' + error);
+            console.log('Failed to fetch class list:' + error);
         }
     }
 
@@ -282,55 +272,55 @@ const ContractManagement = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Tiêu đề',
+            title: 'Title',
             dataIndex: 'title',
             key: 'title',
         },
         {
-            title: 'Ngày bắt đầu',
+            title: 'Start Date',
             dataIndex: 'start_date',
             key: 'start_date',
             render: (text) => moment(text).format('YYYY-MM-DD'),
 
         },
         {
-            title: 'Ngày kết thúc',
+            title: 'End Date',
             dataIndex: 'end_date',
             key: 'end_date',
             render: (text) => moment(text).format('YYYY-MM-DD'),
 
         },
         {
-            title: 'Tên giáo viên',
+            title: 'Teacher Name',
             dataIndex: 'teacher_username',
             key: 'teacher_username',
         },
         {
-            title: 'Số điện thoại GV',
+            title: 'Teacher Phone',
             dataIndex: 'teacher_phone',
             key: 'teacher_phone',
         },
         {
-            title: 'Mô tả',
+            title: 'Description',
             dataIndex: 'description',
             key: 'description',
         },
         {
-            title: 'File đính kèm',
+            title: 'Attachment',
             dataIndex: 'file_url',
             key: 'file_url',
             render: (attachment) => (
                 <a href={attachment} target="_blank" rel="noopener noreferrer">
-                    {"Xem file"}
+                    {"View file"}
                 </a>
             ),
         },
         {
-            title: 'Giá trị',
+            title: 'Value',
             dataIndex: 'value',
             key: 'value',
             render: (text, record) => {
-                // Định dạng số theo format tiền Việt Nam
+                // Format number as Vietnamese currency
                 const formattedCost = Number(record.value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
                 return formattedCost;
             },
@@ -341,7 +331,7 @@ const ContractManagement = () => {
             render: (text, record) => (
                 <div>
                     <Row>
-                        {getItemFromLocalStorage("user").role == "isAdmin" ? (
+                        {getItemFromLocalStorage("user").role === "isAdmin" ? (
                             <>
                                 <Button
                                     size="small"
@@ -349,11 +339,11 @@ const ContractManagement = () => {
                                     style={{ width: 150, borderRadius: 15, height: 30 }}
                                     onClick={() => handleEditCategory(record.id)}
                                 >
-                                    {"Chỉnh sửa"}
+                                    {"Edit"}
                                 </Button>
                                 <div style={{ marginLeft: 10 }}>
                                     <Popconfirm
-                                        title="Bạn có chắc chắn xóa lớp này?"
+                                        title="Are you sure to delete this class?"
                                         onConfirm={() => handleDeleteCategory(record.id)}
                                         okText="Yes"
                                         cancelText="No"
@@ -363,21 +353,21 @@ const ContractManagement = () => {
                                             icon={<DeleteOutlined />}
                                             style={{ width: 150, borderRadius: 15, height: 30 }}
                                         >
-                                            {"Xóa"}
+                                            {"Delete"}
                                         </Button>
                                     </Popconfirm>
                                 </div>
                             </>
-                        ) : getItemFromLocalStorage("user").role == "isTeacher" ? (
+                        ) : getItemFromLocalStorage("user").role === "isTeacher" ? (
                             <>
                                 <Button
                                     size="small"
                                     icon={<FormOutlined />}
                                     style={{ width: 150, borderRadius: 15, height: 30 }}
                                     onClick={() => handleJoinTeacherClass(record.id)}
-                                    disabled={record.teacher_id === getItemFromLocalStorage("user").id} // Kiểm tra nếu id bằng với teacher_id thì disable nút
+                                    disabled={record.teacher_id === getItemFromLocalStorage("user").id} // Check if id is equal to teacher_id then disable the button
                                 >
-                                    {"Tham gia lớp"}
+                                    {"Join class"}
                                 </Button>
                                 <Button
                                     size="small"
@@ -385,7 +375,7 @@ const ContractManagement = () => {
                                     style={{ width: 150, borderRadius: 15, height: 30, marginLeft: 10 }}
                                     onClick={() => handleViewClass(record.id)}
                                 >
-                                    {"Xem"}
+                                    {"View"}
                                 </Button>
                             </>
                         ) : <>
@@ -396,7 +386,7 @@ const ContractManagement = () => {
                                 style={{ width: 150, borderRadius: 15, height: 30, marginLeft: 10 }}
                                 onClick={() => handleViewClass(record.id)}
                             >
-                                {"Xem"}
+                                {"View"}
                             </Button>
                         </>}
                     </Row>
@@ -426,7 +416,7 @@ const ContractManagement = () => {
                 });
 
             } catch (error) {
-                console.log('Failed to fetch category list:' + error);
+                console.log('Failed to fetch class list:' + error);
             }
         })();
     }, [])
@@ -441,7 +431,7 @@ const ContractManagement = () => {
                             </Breadcrumb.Item>
                             <Breadcrumb.Item href="">
                                 <ShoppingOutlined />
-                                <span>Quản lý lớp</span>
+                                <span>Class Management</span>
                             </Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
@@ -458,7 +448,7 @@ const ContractManagement = () => {
                                     <Col span="6">
                                         <Row justify="end">
                                             <Space>
-                                                {getItemFromLocalStorage("user").role == "isAdmin" ? <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Tạo lớp</Button> : null}
+                                                {getItemFromLocalStorage("user").role === "isAdmin" ? <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Create Class</Button> : null}
                                             </Space>
                                         </Row>
                                     </Col>
@@ -474,7 +464,7 @@ const ContractManagement = () => {
                 </div>
 
                 <Modal
-                    title="Tạo lớp mới"
+                    title="Create New Class"
                     visible={openModalCreate}
                     style={{ top: 100 }}
                     onOk={() => {
@@ -489,8 +479,8 @@ const ContractManagement = () => {
                             });
                     }}
                     onCancel={() => handleCancel("create")}
-                    okText="Hoàn thành"
-                    cancelText="Hủy"
+                    okText="Complete"
+                    cancelText="Cancel"
                     width={600}
                 >
                     <Form
@@ -506,69 +496,69 @@ const ContractManagement = () => {
                         <Spin spinning={loading}>
                             <Form.Item
                                 name="title"
-                                label="Tiêu đề"
+                                label="Title"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập tiêu đề!',
+                                        message: 'Please input title!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <Input placeholder="Tiêu đề" />
+                                <Input placeholder="Title" />
                             </Form.Item>
                             <Form.Item
                                 name="start_date"
-                                label="Ngày bắt đầu"
+                                label="Start Date"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập ngày bắt đầu!',
+                                        message: 'Please select start date!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <DatePicker style={{ width: '100%' }} placeholder="Chọn ngày bắt đầu" />
+                                <DatePicker style={{ width: '100%' }} placeholder="Select start date" />
                             </Form.Item>
                             <Form.Item
                                 name="end_date"
-                                label="Ngày kết thúc"
+                                label="End Date"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập ngày kết thúc!',
+                                        message: 'Please select end date!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <DatePicker style={{ width: '100%' }} placeholder="Chọn ngày kết thúc" />
+                                <DatePicker style={{ width: '100%' }} placeholder="Select end date" />
                             </Form.Item>
                             <Form.Item
                                 name="description"
-                                label="Mô tả"
+                                label="Description"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập mô tả!',
+                                        message: 'Please input description!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <TextArea placeholder="Mô tả" autoSize={{ minRows: 6, maxRows: 10 }} />
+                                <TextArea placeholder="Description" autoSize={{ minRows: 6, maxRows: 10 }} />
                             </Form.Item>
                             <Form.Item
                                 name="value"
-                                label="Giá trị"
+                                label="Value"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập giá trị!',
+                                        message: 'Please input value!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
                                 <InputNumber
-                                    placeholder="Giá trị"
+                                    placeholder="Value"
                                     style={{ width: '100%' }}
                                     formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} // Use dot as a thousand separator
                                     parser={(value) => value.replace(/\./g, '')} // Remove dots for parsing
@@ -577,11 +567,11 @@ const ContractManagement = () => {
 
                             <Form.Item
                                 name="image"
-                                label="Đính kèm"
+                                label="Attachment"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng đính kèm!',
+                                        message: 'Please attach file!',
                                     },
                                 ]}
                             >
@@ -598,7 +588,7 @@ const ContractManagement = () => {
                 </Modal>
 
                 <Modal
-                    title="Chỉnh sửa lớp"
+                    title="Edit Class"
                     visible={openModalUpdate}
                     style={{ top: 100 }}
                     onOk={() => {
@@ -613,8 +603,8 @@ const ContractManagement = () => {
                             });
                     }}
                     onCancel={handleCancel}
-                    okText="Hoàn thành"
-                    cancelText="Hủy"
+                    okText="Complete"
+                    cancelText="Cancel"
                     width={600}
                 >
                     <Form
@@ -630,69 +620,69 @@ const ContractManagement = () => {
                         <Spin spinning={loading}>
                             <Form.Item
                                 name="title"
-                                label="Tiêu đề"
+                                label="Title"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập tiêu đề!',
+                                        message: 'Please input title!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <Input placeholder="Tiêu đề" />
+                                <Input placeholder="Title" />
                             </Form.Item>
                             <Form.Item
                                 name="start_date"
-                                label="Ngày bắt đầu"
+                                label="Start Date"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập ngày bắt đầu!',
+                                        message: 'Please select start date!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <DatePicker style={{ width: '100%' }} placeholder="Chọn ngày bắt đầu" />
+                                <DatePicker style={{ width: '100%' }} placeholder="Select start date" />
                             </Form.Item>
                             <Form.Item
                                 name="end_date"
-                                label="Ngày kết thúc"
+                                label="End Date"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập ngày kết thúc!',
+                                        message: 'Please select end date!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <DatePicker style={{ width: '100%' }} placeholder="Chọn ngày kết thúc" />
+                                <DatePicker style={{ width: '100%' }} placeholder="Select end date" />
                             </Form.Item>
                             <Form.Item
                                 name="description"
-                                label="Mô tả"
+                                label="Description"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập mô tả!',
+                                        message: 'Please input description!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
-                                <TextArea placeholder="Mô tả" autoSize={{ minRows: 6, maxRows: 10 }} />
+                                <TextArea placeholder="Description" autoSize={{ minRows: 6, maxRows: 10 }} />
                             </Form.Item>
                             <Form.Item
                                 name="value"
-                                label="Giá trị"
+                                label="Value"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập giá trị!',
+                                        message: 'Please input value!',
                                     },
                                 ]}
                                 style={{ marginBottom: 10 }}
                             >
                                 <InputNumber
-                                    placeholder="Giá trị"
+                                    placeholder="Value"
                                     style={{ width: '100%' }}
                                     formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')} // Use dot as a thousand separator
                                     parser={(value) => value.replace(/\./g, '')} // Remove dots for parsing
@@ -700,7 +690,7 @@ const ContractManagement = () => {
                             </Form.Item>
                             <Form.Item
                                 name="image"
-                                label="Đính kèm"
+                                label="Attachment"
                             >
                                 <input
                                     type="file"

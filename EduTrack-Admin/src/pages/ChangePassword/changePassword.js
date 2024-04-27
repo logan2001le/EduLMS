@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./changePassword.css";
 import { useHistory } from "react-router-dom";
 import { Form, Input, Button, Divider, Alert, notification } from 'antd';
-import backgroundLogin from "../../assets/image/background-login.png";
+import backgroundLogin from "../../assets/image/login_background.png";
 import { useParams } from "react-router-dom";
 import axiosClient from '../../apis/axiosClient';
 
@@ -24,9 +24,9 @@ const ChangePassWord = () => {
                 console.log(response);
                 if (response.message == "Current password is incorrect") {
                     return notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Mật khẩu hiện tại không đúng!',
+                            'Incorrect current password!',
 
                     });
                 }
@@ -35,9 +35,9 @@ const ChangePassWord = () => {
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Thay đổi mật khẩu thành công',
+                            'Password changed successfully',
 
                     });
                     history.push("/login");
@@ -72,7 +72,7 @@ const ChangePassWord = () => {
                             <Divider style={{ marginBottom: 5, fontSize: 19 }} orientation="center">EduTrack!</Divider>
                         </Form.Item>
                         <Form.Item style={{ marginBottom: 16, textAlign: "center" }}>
-                            <p className="text">Thay đổi mật khẩu</p>
+                            <p className="text">Change Password</p>
                         </Form.Item>
                         <>
                             {isLogin === true ?
@@ -91,12 +91,12 @@ const ChangePassWord = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Nhập mật khẩu cũ!',
+                                    message: 'Enter your current password!',
                                 },
                             ]}
                             hasFeedback
                         >
-                            <Input.Password placeholder="Mật khẩu cũ" />
+                            <Input.Password placeholder="Current Password" />
                         </Form.Item>
 
                         <Form.Item
@@ -104,14 +104,14 @@ const ChangePassWord = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Nhập mật khẩu!',
+                                    message: 'Enter your new password!',
                                 },
-                                { max: 100, message: 'Tên tối đa 100 ký tự' },
-                                { min: 5, message: 'Tên ít nhất 5 ký tự' },
+                                { max: 100, message: 'Maximum 100 characters' },
+                                { min: 5, message: 'At least 5 characters' },
                             ]}
                             hasFeedback
                         >
-                            <Input.Password placeholder="Mật khẩu" />
+                            <Input.Password placeholder="New Password" />
                         </Form.Item>
 
                         <Form.Item
@@ -121,7 +121,7 @@ const ChangePassWord = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập lại mật khẩu!',
+                                    message: 'Please confirm your new password!',
                                 },
                                 ({ getFieldValue }) => ({
                                     validator(_, value) {
@@ -129,17 +129,17 @@ const ChangePassWord = () => {
                                             return Promise.resolve();
                                         }
 
-                                        return Promise.reject(new Error('Hai mật khẩu bạn nhập không khớp!'));
+                                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
                                     },
                                 }),
                             ]}
                         >
-                            <Input.Password placeholder="Nhập lại mật khẩu" />
+                            <Input.Password placeholder="Confirm New Password" />
                         </Form.Item>
 
                         <Form.Item style={{ width: '100%', marginTop: 20 }}>
                             <Button className="button" type="primary" htmlType="submit"  >
-                                Hoàn thành
+                                Submit
                             </Button>
                         </Form.Item>
                     </Form>
@@ -150,6 +150,3 @@ const ChangePassWord = () => {
 };
 
 export default ChangePassWord;
-
-
-

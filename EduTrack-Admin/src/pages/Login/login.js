@@ -1,26 +1,26 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Alert, Button, Divider, Form, Input,Modal, notification } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Alert, Button, Divider, Form, Input, Modal, notification } from "antd";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import userApi from "../../apis/userApi";
-import backgroundLogin from "../../assets/image/background-login.png";
+import backgroundLogin from "../../assets/image/login_background.png";
 import "./login.css";
 
 const Login = () => {
-
   const [isLogin, setLogin] = useState(true);
-  const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
+  const [forgotPasswordModalVisible, setForgotPasswordModalVisible] =
+    useState(false);
   const [forgotPasswordForm] = Form.useForm(); // Add this line
 
   let history = useHistory();
 
-  const onFinish = values => {
-    userApi.login(values.email, values.password)
+  const onFinish = (values) => {
+    userApi
+      .login(values.email, values.password)
       .then(function (response) {
         if (!response.status) {
           setLogin(false);
-        }
-        else {
+        } else {
           (async () => {
             try {
               console.log(response);
@@ -28,22 +28,20 @@ const Login = () => {
                 history.push("/contracts-management");
               } else {
                 notification["error"]({
-                  message: `Thông báo`,
-                  description:
-                    'Bạn không có quyền truy cập vào hệ thống',
-
+                  message: `Notification`,
+                  description: "You are not authorized to access this system",
                 });
               }
             } catch (error) {
-              console.log('Failed to fetch ping role:' + error);
+              console.log("Failed to fetch ping role:" + error);
             }
           })();
         }
       })
-      .catch(error => {
-        console.log("email or password error" + error)
+      .catch((error) => {
+        console.log("email or password error" + error);
       });
-  }
+  };
 
   const showForgotPasswordModal = () => {
     setForgotPasswordModalVisible(true);
@@ -54,39 +52,36 @@ const Login = () => {
   };
 
   const handleForgotPasswordSubmit = async () => {
-    const values = await forgotPasswordForm.validateFields(); 
+    const values = await forgotPasswordForm.validateFields();
     console.log(values.email);
 
     try {
       const data = {
-        "email": values.email
-      }
+        email: values.email,
+      };
       await userApi.forgotPassword(data);
       notification.success({
-        message: 'Thông báo',
-        description: 'Đã gửi đường dẫn đổi mật khẩu qua email.',
+        message: "Message",
+        description: "Reset Password Link sent via email",
       });
       setForgotPasswordModalVisible(false);
     } catch (error) {
       notification.error({
-        message: 'Lỗi',
-        description: 'Đã có lỗi xảy ra khi gửi đường dẫn đổi mật khẩu.',
+        message: "Error",
+        description: "Error when sending link reset password via email",
       });
-      console.error('Forgot password error:', error);
+      console.error("Forgot password error:", error);
     }
   };
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <div className="imageBackground">
-      <div id="formContainer" >
+      <div id="formContainer">
         <div id="form-Login">
-          <div className="formContentLeft"
-          >
-            <img className="formImg" src={backgroundLogin} alt='spaceship' />
+          <div className="formContentLeft">
+            <img className="formImg" src={backgroundLogin} alt="spaceship" />
           </div>
           <Form
             style={{ width: 340, marginBottom: 8 }}
@@ -98,22 +93,28 @@ const Login = () => {
             onFinish={onFinish}
           >
             <Form.Item style={{ marginBottom: 3, marginTop: 65 }}>
-              <Divider style={{ marginBottom: 5, fontSize: 19 }} orientation="center">CHÀO MỪNG BẠN ĐẾN VỚI HỆ THỐNG!</Divider>
+              <Divider
+                style={{ marginBottom: 5, fontSize: 19 }}
+                orientation="center"
+              >
+                WELCOME TO THE EDUTRACK SYSTEM
+              </Divider>
             </Form.Item>
             <Form.Item style={{ marginBottom: 16, textAlign: "center" }}>
-              <p className="text">Đăng nhập để vào hệ thống</p>
+              <p className="text"></p>
             </Form.Item>
             <>
-              {isLogin === false ?
+              {isLogin === false ? (
                 <Form.Item style={{ marginBottom: 16 }}>
                   <Alert
-                    message="Tài khoản hoặc mật khẩu sai"
+                    message="Incorrect email or password"
                     type="error"
                     showIcon
                   />
-
                 </Form.Item>
-                : ""}
+              ) : (
+                ""
+              )}
             </>
             <Form.Item
               style={{ marginBottom: 20 }}
@@ -121,59 +122,72 @@ const Login = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập email!',
+                  message: "Please input your email!",
                 },
                 {
-                  type: 'email',
-                  message: 'Email không hợp lệ!',
-              },
+                  type: "email",
+                  message: "Invalid email!",
+                },
               ]}
             >
               <Input
                 style={{ height: 34, borderRadius: 5 }}
                 prefix={<UserOutlined className="siteformitemicon" />}
-                placeholder="Email" />
-            </Form.Item >
+                placeholder="Email"
+              />
+            </Form.Item>
             <Form.Item
               style={{ marginBottom: 8 }}
               name="password"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập mật khẩu!',
+                  message: "Please input your password!",
                 },
               ]}
             >
               <Input.Password
                 prefix={<LockOutlined className="siteformitemicon" />}
                 type="password"
-                placeholder="Mật khẩu"
+                placeholder="Password"
                 style={{ height: 34, borderRadius: 5 }}
               />
             </Form.Item>
 
-            <Form.Item style={{ width: '100%', marginTop: 20, marginBottom: 5 }}>
-              <Button className="button" type="primary" htmlType="submit"  >
-                Đăng Nhập
+            <Form.Item
+              style={{ width: "100%", marginTop: 20, marginBottom: 5 }}
+            >
+              <Button className="button" type="primary" htmlType="submit">
+                Log In
               </Button>
             </Form.Item>
 
-            <Form.Item style={{ textAlign: 'center' }}>
-              <a onClick={showForgotPasswordModal}>Quên mật khẩu?</a>
+            <Form.Item style={{ textAlign: "center" }}>
+              <a
+                onClick={showForgotPasswordModal}
+                style={{ color: "black", textDecoration: "none" }}
+                className="forgotPasswordLink"
+              >
+                Forgot password?
+              </a>
             </Form.Item>
           </Form>
         </div>
 
         <Modal
-          title="Quên mật khẩu"
+          title="Forgot Password"
           visible={forgotPasswordModalVisible}
           onCancel={handleForgotPasswordCancel}
           footer={[
             <Button key="back" onClick={handleForgotPasswordCancel}>
-              Hủy
+              Cancel
             </Button>,
-            <Button key="submit" type="primary" onClick={handleForgotPasswordSubmit}>
-              Gửi đường dẫn đổi mật khẩu
+            <Button
+              key="submit"
+              type="primary"
+              onClick={handleForgotPasswordSubmit}
+            >
+              Send password reset link
             </Button>,
           ]}
         >
@@ -186,12 +200,12 @@ const Login = () => {
               name="email"
               rules={[
                 {
-                  type: 'email',
-                  message: 'Email không hợp lệ',
+                  type: "email",
+                  message: "Invalid email",
                 },
                 {
                   required: true,
-                  message: 'Vui lòng nhập email',
+                  message: "Please input your email",
                 },
               ]}
             >
@@ -205,6 +219,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-

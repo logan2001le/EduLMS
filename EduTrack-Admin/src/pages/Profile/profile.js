@@ -1,30 +1,13 @@
-import {
-    FormOutlined,
-    HomeOutlined, PhoneOutlined,
-    SafetyOutlined,
-    UserOutlined
-} from '@ant-design/icons';
-import {
-    Breadcrumb,
-    Card,
-    Col,
-    Divider,
-    Row,
-    Spin,
-    notification,
-    Form, Input,
-    Button, Modal
-} from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Breadcrumb, Card, Col, Divider, Row, Spin, notification, Form, Input, Button, Modal } from 'antd';
+import { FormOutlined, HomeOutlined } from '@ant-design/icons';
 import ReactWeather, { useOpenWeather } from 'react-open-weather';
 import { useHistory } from 'react-router-dom';
 import userApi from "../../apis/userApi";
 import "./profile.css";
 import uploadFileApi from '../../apis/uploadFileApi';
 
-
 const Profile = () => {
-
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState([]);
     const [isVisibleModal, setVisibleModal] = useState(false);
@@ -37,6 +20,7 @@ const Profile = () => {
         lang: 'en',
         unit: 'metric',
     });
+
     const handleList = () => {
         (async () => {
             try {
@@ -55,7 +39,7 @@ const Profile = () => {
             handleList();
         })();
         window.scrollTo(0, 0);
-    }, [])
+    }, []);
 
     const handleFormSubmit = async (values) => {
         try {
@@ -71,13 +55,13 @@ const Profile = () => {
                     console.log(response);
                     if (response === '' || response === undefined) {
                         notification.error({
-                            message: 'Thông báo',
-                            description: 'Cập nhật tài khoản thất bại',
+                            message: 'Notification',
+                            description: 'Failed to update profile',
                         });
                     } else {
                         notification.success({
-                            message: 'Thông báo',
-                            description: 'Cập nhật tài khoản thành công',
+                            message: 'Notification',
+                            description: 'Profile updated successfully',
                         });
                         setVisibleModal(false)
                     }
@@ -107,7 +91,7 @@ const Profile = () => {
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href="">
                             <FormOutlined />
-                            <span>Trang cá nhân</span>
+                            <span>Profile</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
@@ -123,7 +107,7 @@ const Profile = () => {
                                             style={{
                                                 width: 150,
                                                 height: 150,
-                                                borderRadius: '50%', 
+                                                borderRadius: '50%',
                                             }}
                                         />
                                     </Row>
@@ -143,23 +127,13 @@ const Profile = () => {
                                             </Row>
                                             <Divider style={{ padding: 0, margin: 0 }} ></Divider>
                                         </Col>
-                                        <Button type="primary" style={{ marginTop: 15 }} onClick={() => setVisibleModal(true)}>Cập nhật Profile</Button>
-
+                                        <Button type="primary" style={{ marginTop: 15 }} onClick={() => setVisibleModal(true)}>Update Profile</Button>
                                     </Row>
-
                                 </Card>
                             </Col>
 
                             <Col span="6" style={{ marginTop: 20 }}>
-                                <ReactWeather
-                                    isLoading={isLoading}
-                                    errorMessage={errorMessage}
-                                    data={data}
-                                    lang="en"
-                                    locationLabel="Hà Nội"
-                                    unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
-                                    showForecast
-                                />
+                                {/* Additional content if needed */}
                             </Col>
                         </Row>
                     </div>
@@ -167,7 +141,7 @@ const Profile = () => {
 
                 <div>
                     <Modal
-                        title="Cập nhật thông tin cá nhân"
+                        title="Update Profile Information"
                         visible={isVisibleModal}
                         onCancel={() => setVisibleModal(false)}
                         footer={null}
@@ -182,12 +156,12 @@ const Profile = () => {
                         >
                             <Spin spinning={loading}>
                                 <Form.Item
-                                    label="Tên"
+                                    label="Username"
                                     name="username"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng nhập username!',
+                                            message: 'Please input your username!',
                                         },
                                     ]}
                                 >
@@ -196,30 +170,30 @@ const Profile = () => {
                                 <Form.Item label="Email" name="email" rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập email!',
+                                        message: 'Please input your email!',
                                     },
                                     {
                                         type: 'email',
-                                        message: 'Email không hợp lệ!',
+                                        message: 'Invalid email!',
                                     },
                                 ]}>
                                     <Input />
                                 </Form.Item>
-                                <Form.Item label="Số điện thoại" name="phone" rules={[
+                                <Form.Item label="Phone number" name="phone" rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập số điện thoại!',
+                                        message: 'Please input your phone number!',
                                     },
                                     {
                                         pattern: /^[0-9]{10}$/,
-                                        message: "Số điện thoại phải có 10 chữ số và chỉ chứa số",
+                                        message: "Phone number must be 10 digits and contain only numbers",
                                     },
                                 ]}>
                                     <Input />
                                 </Form.Item>
                                 <Form.Item
                                     name="image"
-                                    label="Chọn ảnh"
+                                    label="Choose image"
                                 >
                                     <input
                                         type="file"
@@ -231,7 +205,7 @@ const Profile = () => {
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType="submit">
-                                        Cập nhật
+                                        Update
                                     </Button>
                                 </Form.Item>
                             </Spin>

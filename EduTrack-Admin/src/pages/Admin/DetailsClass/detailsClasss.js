@@ -1,7 +1,8 @@
 import {
     HomeOutlined,
     PlusOutlined,
-    ShoppingOutlined
+    ShoppingOutlined,
+    FormOutlined
 } from '@ant-design/icons';
 import { PageHeader } from '@ant-design/pro-layout';
 import {
@@ -16,7 +17,10 @@ import {
     Space,
     Spin,
     notification,
-    Table
+    Table,
+    Modal,
+    Input,
+    Rate
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
@@ -25,6 +29,7 @@ import { getItemFromLocalStorage } from '../../../apis/storageService';
 import "./detailsClass.css";
 
 const { Title, Paragraph } = Typography;
+const { TextArea } = Input;
 
 const DetailsClass = () => {
 
@@ -38,31 +43,31 @@ const DetailsClass = () => {
         console.log(id);
         const teacherId = getItemFromLocalStorage("user").id;
         try {
-            // Thực hiện gọi API addTeacherToContract với contractId
+            // Perform addTeacherToContract API call with contractId
             const response = await contractManagementApi.addStudentToContract(id, teacherId);
             if (response.message == "Student added to contract successfully") {
-               return notification["success"]({
-                    message: `Thông báo`,
+                return notification["success"]({
+                    message: `Notification`,
                     description:
-                        'Tham gia lớp thành công!',
+                        'Joined class successfully!',
 
                 });
             }
 
             if (response.message == "Sinh viên đã tồn tại trong lớp") {
-               return notification["success"]({
-                    message: `Thông báo`,
+                return notification["success"]({
+                    message: `Notification`,
                     description:
-                        'Bạn đã tham gia lớp này!',
+                        'You have already joined this class!',
 
                 });
             }
-            // Xử lý kết quả trả về nếu cần
+            // Handle response if needed
             console.log(response.data.message);
             handleCategoryList();
         } catch (error) {
-            // Xử lý khi có lỗi xảy ra
-            console.error('Đã xảy ra lỗi khi tham gia lớp:', error);
+            // Handle error
+            console.error('Failed to join class:', error);
         }
     }
 
@@ -77,6 +82,19 @@ const DetailsClass = () => {
             console.log('Failed to fetch event list:' + error);
         };
     }
+
+    const [reviews, setReviews] = useState([]);
+    const [loadingReviews, setLoadingReviews] = useState(true);
+
+    const handleGetReviews = async () => {
+        try {
+            const response = await contractManagementApi.getReviews(id);
+            setReviews(response.reviews);
+            setLoadingReviews(false);
+        } catch (error) {
+            console.error('Failed to fetch reviews:', error);
+        }
+    };
 
     useEffect(() => {
         (async () => {
@@ -93,6 +111,7 @@ const DetailsClass = () => {
                     setLoading(false);
                 });
 
+                handleGetReviews();
 
             } catch (error) {
                 console.log('Failed to fetch category list:' + error);
@@ -123,6 +142,65 @@ const DetailsClass = () => {
         },
     ];
 
+    const [visible, setVisible] = useState(false);
+    const [form3] = Form.useForm();
+
+
+    const showModal3 = () => {
+        setVisible(true);
+    };
+
+    const handleCancel3 = () => {
+        setVisible(false);
+    };
+
+    const onFinish = async (values) => {
+        const studentId = getItemFromLocalStorage("user").id;
+        try {
+            const response = await contractManagementApi.addReview(id, { studentId, ...values });
+            if (response) {
+                notification["success"]({
+                    message: `Notification`,
+                    description: 'Review submitted successfully!'
+                });
+                form3.resetFields();
+                setVisible(false);
+                handleGetReviews();
+            }
+        } catch (error) {
+            console.error('Failed to submit review:', error);
+        }
+    };
+
+    const columns3 = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Contract',
+            dataIndex: 'contract_title',
+            key: 'contract_title',
+        },
+        {
+            title: 'Student',
+            dataIndex: 'student_username',
+            key: 'student_username',
+        },
+        {
+            title: 'Rating',
+            dataIndex: 'rating',
+            key: 'rating',
+        },
+        {
+            title: 'Comment',
+            dataIndex: 'comment',
+            key: 'comment',
+        },
+    ];
+
+
     return (
         <div>
             <Spin spinning={loading}>
@@ -134,7 +212,7 @@ const DetailsClass = () => {
                             </Breadcrumb.Item>
                             <Breadcrumb.Item href="">
                                 <ShoppingOutlined />
-                                <span>Quản lý lớp</span>
+                                <span>Class Management</span>
                             </Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
@@ -151,7 +229,12 @@ const DetailsClass = () => {
                                     <Col span="6">
                                         <Row justify="end">
                                             <Space>
-                                                {getItemFromLocalStorage("user").role == "isStudent" ? <Button onClick={handleJoinStudentClass} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Tham gia lớp</Button> : null}
+                                                {getItemFromLocalStorage("user").role == "isStudent" ?
+                                                    <Button onClick={handleJoinStudentClass} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Join class</Button> : null}
+
+                                                {getItemFromLocalStorage("user").role == "isStudent" ?
+                                                    <Button onClick={showModal3} icon={<FormOutlined />} style={{ marginLeft: 10 }} >Review</Button> : null}
+
                                             </Space>
                                         </Row>
                                     </Col>
@@ -161,26 +244,50 @@ const DetailsClass = () => {
                         </div>
                     </div>
 
-                    <Card title="Chi tiết lớp">
+
+                    <Modal
+                        title="Class Review"
+                        visible={visible}
+                        onCancel={handleCancel3}
+                        footer={null}
+                    >
+                        <Form form={form3} onFinish={onFinish} layout="vertical">
+                            <Form.Item name="rating" label="Rating">
+                                <Rate />
+                            </Form.Item>
+                            <Form.Item name="comment" label="Comment">
+                                <Input.TextArea />
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">Submit Review</Button>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    <Card title="Class Details">
                         <Title level={3}>{category.title}</Title>
                         <Paragraph>{category.description}</Paragraph>
                         <Divider />
-                        <Paragraph><strong>Ngày bắt đầu:</strong> {category.start_date}</Paragraph>
-                        <Paragraph><strong>Ngày kết thúc:</strong> {category.end_date}</Paragraph>
-                        <Paragraph><strong>Giá trị:</strong> {category.value}</Paragraph>
-                        <Paragraph><strong>Trạng thái:</strong> {category.status}</Paragraph>
-                        <Paragraph><strong>Ngày tạo:</strong> {category.created_at}</Paragraph>
-                        <Paragraph><strong>Ngày cập nhật:</strong> {category.updated_at}</Paragraph>
+                        <Paragraph><strong>Start Date:</strong> {category.start_date}</Paragraph>
+                        <Paragraph><strong>End Date:</strong> {category.end_date}</Paragraph>
+                        <Paragraph><strong>Value:</strong> {category.value}</Paragraph>
+                        <Paragraph><strong>Status:</strong> {category.status}</Paragraph>
+                        <Paragraph><strong>Created Date:</strong> {category.created_at}</Paragraph>
+                        <Paragraph><strong>Updated Date:</strong> {category.updated_at}</Paragraph>
                         <Divider />
                         <a href={category.file_url} target="_blank" rel="noopener noreferrer">
-                            Xem file
+                            View File
                         </a>
                     </Card>
 
                     <div>
-                    <Title level={3}>Danh sách sinh viên</Title>
+                        <Title level={3}>Student List</Title>
 
                         <Table columns={columns} dataSource={student} />
+                    </div>
+
+                    <div>
+                        <Title level={3}>Review List</Title>
+                        <Table columns={columns3} dataSource={reviews} loading={loadingReviews} />
                     </div>
                 </div>
 

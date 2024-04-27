@@ -53,16 +53,16 @@ const Visitors = () => {
             return userApi.sendNotification(categoryList).then(response => {
                 if (response === undefined) {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Tạo thông báo thất bại',
+                            'Failed to create notification',
                     });
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Tạo thông báo thành công',
+                            'Notification created successfully',
                     });
                     setOpenModalCreate(false);
                     handleList();
@@ -90,29 +90,29 @@ const Visitors = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Tiêu đề',
+            title: 'Title',
             dataIndex: 'title',
             key: 'title',
         },
         {
-            title: 'Nội dung',
+            title: 'Content',
             dataIndex: 'content',
             key: 'content',
         },
         {
-            title: 'Ngày bắt đầu',
+            title: 'Start Date',
             dataIndex: 'start_date',
             key: 'start_date',
             render: (text) => moment(text).format('YYYY-MM-DD'),
         },
         {
-            title: 'Ngày kết thúc',
+            title: 'End Date',
             dataIndex: 'end_date',
             key: 'end_date',
             render: (text) => moment(text).format('YYYY-MM-DD'),
         },
         {
-            title: 'Ngày tạo',
+            title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
             render: (text) => moment(text).format('YYYY-MM-DD'),
@@ -148,7 +148,7 @@ const Visitors = () => {
                             </Breadcrumb.Item>
                             <Breadcrumb.Item href="">
                                 <ShoppingOutlined />
-                                <span>Gửi thông báo</span>
+                                <span>Send notification</span>
                             </Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
@@ -166,7 +166,7 @@ const Visitors = () => {
                                     <Col span="6">
                                         <Row justify="end">
                                             <Space>
-                                                <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Tạo thông báo</Button>
+                                                <Button onClick={showModal} icon={<PlusOutlined />} style={{ marginLeft: 10 }} >Create notification</Button>
                                             </Space>
                                         </Row>
                                     </Col>
@@ -182,7 +182,7 @@ const Visitors = () => {
 
                     <div style={{ marginTop: 30 }}>
                         <Modal
-                            title="Tạo thông báo mới"
+                            title="Create new notification"
                             visible={openModalCreate}
                             style={{ top: 100 }}
                             onOk={() => {
@@ -197,8 +197,8 @@ const Visitors = () => {
                                     });
                             }}
                             onCancel={() => handleCancel("create")}
-                            okText="Hoàn thành"
-                            cancelText="Hủy"
+                            okText="Finish"
+                            cancelText="Cancel"
                             width={600}
                         >
                             <Form
@@ -213,44 +213,44 @@ const Visitors = () => {
                             >
                                 <Form.Item
                                     name="title"
-                                    label="Tiêu đề"
+                                    label="Title"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng nhập tiêu đề!',
+                                            message: 'Please input title!',
                                         },
                                     ]}
                                     style={{ marginBottom: 10 }}
                                 >
-                                    <Input placeholder="Tiêu đề" />
+                                    <Input placeholder="Title" />
                                 </Form.Item>
                                 <Form.Item
                                     name="content"
-                                    label="Nội dung"
+                                    label="Content"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng nhập nội dung!',
+                                            message: 'Please input content!',
                                         },
                                     ]}
                                     style={{ marginBottom: 10 }}
                                 >
-                                    <Input placeholder="Nội dung" />
+                                    <Input placeholder="Content" />
                                 </Form.Item>
                                 <Form.Item
                                     name="role"
-                                    label="Vai trò"
+                                    label="Role"
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Vui lòng nhập vai trò!',
+                                            message: 'Please select role!',
                                         },
                                     ]}
                                     style={{ marginBottom: 10 }}
                                 >
-                                    <Select placeholder="Chọn vai trò">
-                                        <Option value="isStudent">Sinh viên</Option>
-                                        <Option value="isTeacher">Giáo viên</Option>
+                                    <Select placeholder="Select role">
+                                        <Option value="isStudent">Student</Option>
+                                        <Option value="isTeacher">Teacher</Option>
                                         <Option value="isAdmin">Admin</Option>
                                     </Select>
                                 </Form.Item>

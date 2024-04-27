@@ -35,17 +35,17 @@ function DropdownAvatar() {
     <Menu>
       <Menu.Item icon={<UserOutlined />} >
         <a target="_blank" rel="noopener noreferrer" onClick={() => handleRouter("/profile")}>
-          Trang cá nhân
+          Profile 
         </a>
       </Menu.Item>
       <Menu.Item icon={<SettingOutlined />} >
       <a target="_blank" rel="noopener noreferrer" onClick={() => handleRouter("/change-password/"+ userData._id)}>
-         Thay đổi mật khẩu
+         Change Password 
         </a>
       </Menu.Item>
       <Menu.Item key="3" icon={<LogoutOutlined />} onClick={Logout}  >
         <a target="_blank" rel="noopener noreferrer" >
-          Thoát
+          Logout
         </a>
       </Menu.Item>
     </Menu>

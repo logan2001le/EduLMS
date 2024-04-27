@@ -22,11 +22,8 @@ const AccountManagement = () => {
     const titleCase = (str) => {
         var splitStr = str?.toLowerCase().split(' ');
         for (var i = 0; i < splitStr.length; i++) {
-            // You do not need to check if i is larger than splitStr length, as your for does that for you
-            // Assign it back to the array
             splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
         }
-        // Directly return the joined string
         return splitStr.join(' ');
     }
 
@@ -40,13 +37,13 @@ const AccountManagement = () => {
             ),
         },
         {
-            title: 'Tên',
+            title: 'Name',
             dataIndex: 'username',
             key: 'username',
             render: (text, record) => (
                 <Space size="middle">
                     {
-                        text == null || text == undefined ? "" :
+                        text == null || text === undefined ? "" :
                             <p style={{ margin: 0 }}>{titleCase(text)}</p>
                     }
 
@@ -59,7 +56,7 @@ const AccountManagement = () => {
             key: 'email',
         },
         {
-            title: 'Số điện thoại',
+            title: 'Phone',
             dataIndex: 'phone',
             key: 'phone',
         },
@@ -73,13 +70,13 @@ const AccountManagement = () => {
                     {
                         text === "isAdmin" ?
                             <Tag color="blue" key={text} style={{ width: 120, textAlign: "center" }} icon={<CopyOutlined />}>
-                                Quản lý
+                                Admin
                             </Tag> : text === "isTeacher" ?
                                 <Tag color="green" key={text} style={{ width: 120, textAlign: "center" }} icon={<CheckCircleOutlined />}>
-                                    Giáo viên
+                                    Teacher
                                 </Tag> :  text === "isStudent" ?
                                         <Tag color="geekblue" key={text} style={{ width: 120, textAlign: "center" }} icon={<UserOutlined />}>
-                                            Sinh viên
+                                            Student
                                         </Tag> : null
                     }
                 </Space>
@@ -87,7 +84,7 @@ const AccountManagement = () => {
         },
 
         {
-            title: 'Trạng thái',
+            title: 'Status',
             dataIndex: 'status',
             key: 'status',
             render: (text, record) => (
@@ -96,13 +93,13 @@ const AccountManagement = () => {
 
                         text === "actived" ?
                             <Tag color="green" key={text} style={{ width: 80, textAlign: "center" }}>
-                                Hoạt động
+                                Active
                             </Tag> : text == "newer" ? <Tag color="blue" key={text} style={{ width: 80, textAlign: "center" }}>
-                                Newer
+                                New
                             </Tag>
 
                                 : <Tag color="default" key={text} style={{ width: 80, textAlign: "center" }}>
-                                    Chặn
+                                    Blocked
                                 </Tag>
                     }
 
@@ -116,7 +113,7 @@ const AccountManagement = () => {
                 <div>
                     <Row>
                         {record.status !== "actived" ? <Popconfirm
-                            title="Bạn muốn mở chặn tài khoản này?"
+                            title="Do you want to unblock this account?"
                             onConfirm={() => handleUnBanAccount(record)}
                             okText="Yes"
                             cancelText="No"
@@ -125,10 +122,10 @@ const AccountManagement = () => {
                                 size="small"
                                 icon={<CheckCircleOutlined />}
                                 style={{ width: 160, borderRadius: 15, height: 30 }}
-                            >{"Mở chặn tài khoản"}
+                            >{"Unblock Account"}
                             </Button>
                         </Popconfirm> : <Popconfirm
-                            title="Bạn muốn chặn tài khoản này?"
+                            title="Do you want to block this account?"
                             onConfirm={() => handleBanAccount(record)}
                             okText="Yes"
                             cancelText="No"
@@ -137,7 +134,7 @@ const AccountManagement = () => {
                                 size="small"
                                 icon={<StopOutlined />}
                                 style={{ width: 160, borderRadius: 15, height: 30 }}
-                            >{"Chặn tài khoản"}
+                            >{"Block Account"}
                             </Button>
                         </Popconfirm>}
                     </Row>
@@ -171,17 +168,17 @@ const AccountManagement = () => {
             await userApi.unBanAccount(params, data.id).then(response => {
                 if (response.message === "Email already exists") {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Mở khóa thất bại',
+                            'Failed to unblock account',
 
                     });
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Mở khóa thành công',
+                            'Unblock account successfully',
 
                     });
                     handleListUser();
@@ -208,17 +205,17 @@ const AccountManagement = () => {
             await userApi.banAccount(params, data.id).then(response => {
                 if (response === undefined) {
                     notification["error"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Chặn thất bại',
+                            'Failed to block account',
 
                     });
                 }
                 else {
                     notification["success"]({
-                        message: `Thông báo`,
+                        message: `Notification`,
                         description:
-                            'Chặn thành công',
+                            'Block account successfully',
 
                     });
                     handleListUser();
@@ -264,35 +261,35 @@ const AccountManagement = () => {
                 .then(response => {
                     console.log(response)
                     if (response == "User with this phone number already exists") {
-                        return message.error('Số điện thoại không được trùng');
+                        return message.error('Phone number must be unique');
                     }
 
                     if (response == "User with this email already exists") {
-                        return message.error('Email không được trùng');
+                        return message.error('Email must be unique');
                     }
 
                     if (response == "User already exists") {
-                        return message.error('Tài khoản đã tổn tại');
+                        return message.error('User already exists');
                     } else
                         if (response.message == "Validation failed: Email has already been taken") {
                             message.error('Email has already been taken');
                         } else
                             if (response.message == "Validation failed: Phone has already been taken") {
-                                message.error('Validation failed: Phone has already been taken');
+                                message.error('Phone has already been taken');
                             } else
                                 if (response == undefined) {
                                     notification["error"]({
-                                        message: `Thông báo`,
+                                        message: `Notification`,
                                         description:
-                                            'Tạo tài khoản thất bại',
+                                            'Failed to create account',
 
                                     });
                                 }
                                 else {
                                     notification["success"]({
-                                        message: `Thông báo`,
+                                        message: `Notification`,
                                         description:
-                                            'Tạo tài khoản thành công',
+                                            'Account created successfully',
                                     });
                                     form.resetFields();
                                     handleList();
@@ -344,7 +341,7 @@ const AccountManagement = () => {
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href="">
                             <UserOutlined />
-                            <span>Quản lý tài khoản</span>
+                            <span>Account Management</span>
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
@@ -357,7 +354,7 @@ const AccountManagement = () => {
                             <Row>
                                 <Col span="12">
                                     <Input
-                                        placeholder="Tìm kiếm theo email"
+                                        placeholder="Search by email"
                                         allowClear
                                         style={{ width: 300 }}
                                         onChange={handleFilterEmail}
@@ -366,7 +363,7 @@ const AccountManagement = () => {
                                 </Col>
                                 <Col span="12">
                                     <Row justify="end">
-                                        <Button style={{ marginLeft: 10 }} icon={<PlusOutlined />} size="middle" onClick={showModal}>{"Tạo tài khoản"}</Button>
+                                        <Button style={{ marginLeft: 10 }} icon={<PlusOutlined />} size="middle" onClick={showModal}>{"Create Account"}</Button>
                                     </Row>
                                 </Col>
                             </Row>
@@ -377,7 +374,7 @@ const AccountManagement = () => {
                 <div style={{ marginTop: 20, marginRight: 5 }}>
                     <div id="account">
                         <div id="account_container">
-                            <Card title="Quản lý tài khoản" bordered={false} >
+                            <Card title="Account Management" bordered={false} >
                                 <Table columns={columns} dataSource={user} pagination={{ position: ['bottomCenter'] }}
                                 />
                             </Card>
@@ -385,7 +382,7 @@ const AccountManagement = () => {
                     </div>
                 </div>
                 <Modal
-                    title="Thêm tài khoản"
+                    title="Create Account"
                     visible={isModalVisible}
                     onCancel={handleCancel}
                     footer={null}
@@ -403,20 +400,20 @@ const AccountManagement = () => {
                     >
                         <Form.Item
                             name="name"
-                            label="Tên"
+                            label="Name"
                             hasFeedback
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập tên!',
+                                    message: 'Please input name!',
                                 },
-                                { max: 100, message: 'Tên tối đa 100 ký tự' },
-                                { min: 5, message: 'Tên ít nhất 5 ký tự' },
+                                { max: 100, message: 'Name must be at most 100 characters' },
+                                { min: 5, message: 'Name must be at least 5 characters' },
                             ]
                             }
                             style={{ marginBottom: 10 }}
                         >
-                            <Input placeholder="Tên" />
+                            <Input placeholder="Name" />
                         </Form.Item>
 
                         <Form.Item
@@ -426,11 +423,11 @@ const AccountManagement = () => {
                             rules={[
                                 {
                                     type: 'email',
-                                    message: 'Email không hợp lệ!',
+                                    message: 'Email is not valid!',
                                 },
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập email!',
+                                    message: 'Please input email!',
                                 },
                             ]}
                             style={{ marginBottom: 10 }}
@@ -440,67 +437,67 @@ const AccountManagement = () => {
 
                         <Form.Item
                             name="password"
-                            label="Mật khẩu"
+                            label="Password"
                             hasFeedback
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập password!',
+                                    message: 'Please input password!',
                                 },
-                                { max: 20, message: 'Mật khẩu tối đa 20 ký tự' },
-                                { min: 6, message: 'Mật khẩu ít nhất 5 ký tự' },
+                                { max: 20, message: 'Password must be at most 20 characters' },
+                                { min: 6, message: 'Password must be at least 5 characters' },
                             ]
                             }
                             style={{ marginBottom: 10 }}
                         >
-                            <Input.Password placeholder="Mật khẩu" />
+                            <Input.Password placeholder="Password" />
                         </Form.Item>
 
                         <Form.Item
                             name="phone"
-                            label="Số điện thoại"
+                            label="Phone"
                             hasFeedback
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập số điện thoại!',
+                                    message: 'Please input phone number!',
                                 },
                                 {
                                     pattern: /^[0-9]{10}$/,
-                                    message: "Số điện thoại phải có 10 chữ số và chỉ chứa số",
+                                    message: "Phone number must have 10 digits and contain only numbers",
                                 },
                             ]}
                             style={{ marginBottom: 10 }}
                         >
 
-                            <Input placeholder="Số điện thoại" />
+                            <Input placeholder="Phone" />
                         </Form.Item>
 
                         <Form.Item
                             name="role"
-                            label="Phân quyền"
+                            label="Role"
                             hasFeedback
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng chọn phân quyền!',
+                                    message: 'Please select role!',
                                 },
                             ]}
                             style={{ marginBottom: 10 }}
                         >
-                            <Select placeholder="Chọn phân quyền">
+                            <Select placeholder="Select role">
                                 <Option value="isAdmin">Admin</Option>
-                                <Option value="isTeacher">Giáo viên</Option>
-                                <Option value="isStudent">Sinh viên</Option>
+                                <Option value="isTeacher">Teacher</Option>
+                                <Option value="isStudent">Student</Option>
                             </Select>
                         </Form.Item>
 
                         <Form.Item >
                             <Button style={{ background: "#FF8000", color: '#FFFFFF', float: 'right', marginTop: 20, marginLeft: 8 }} htmlType="submit">
-                                Hoàn thành
+                                Finish
                             </Button>
                             <Button style={{ background: "#FF8000", color: '#FFFFFF', float: 'right', marginTop: 20 }} onClick={CancelCreateRecruitment}>
-                                Hủy
+                                Cancel
                             </Button>
                         </Form.Item>
                     </Form>
