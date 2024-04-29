@@ -1,6 +1,8 @@
 # Project Name
 
-Welcome to Project Name! This project is designed to [brief description of your project].
+Welcome to Project Name! This project is designed by Duy Long , Le.
+The project is about LMS intergrating with virtual meeting and real-time communication 
+This was developed in web application and mobile for role user ( student)
 
 ## Installation
 
@@ -8,22 +10,22 @@ Welcome to Project Name! This project is designed to [brief description of your 
 
 Before you begin, ensure you have met the following requirements:
 
-- Node.js (version x.x.x): [Download](https://nodejs.org/)
-- npm (version x.x.x): Included with Node.js installation
-- MySQL database (optional): [Download](https://www.mysql.com/)
+- Node.js (version 18.7.1): [Download](https://nodejs.org/)
+- npm (version 9.8.1): Included with Node.js installation
+- MySQL database (optional): [Download](https://dev.mysql.com/downloads/workbench/)
 
 ### Steps
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/your-project.git
+   git clone https://github.com/logan2001le/EduLMS.git
    ```
 
 2. **Navigate to the project directory:**
 
    ```bash
-   cd your-project
+   cd EduLMS
    ```
 
 3. **Install dependencies:**
@@ -42,12 +44,17 @@ Before you begin, ensure you have met the following requirements:
 1. **Start the server:**
 
    ```bash
-   npm start
+   npm run start
    ```
 
 2. **Access the application:**
 
    Open a web browser and navigate to `http://localhost:3000` to access the application.
+
+3. **Start the mobile app:**
+     ```bash
+   npm react-native start
+   ```
 
 ## Configuration
 
