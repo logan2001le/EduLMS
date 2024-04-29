@@ -74,6 +74,12 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=password
 DB_DATABASE=my_database
+
+
+
 ```
+## Reference:
+Clone the 3rd party service Comechat - Realtime communication by https://github.com/cometchat/cometchat-sample-app-angular
+
 
 
