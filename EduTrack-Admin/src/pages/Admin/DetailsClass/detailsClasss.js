@@ -179,16 +179,6 @@ const DetailsClass = () => {
             key: 'id',
         },
         {
-            title: 'Contract',
-            dataIndex: 'contract_title',
-            key: 'contract_title',
-        },
-        {
-            title: 'Student',
-            dataIndex: 'student_username',
-            key: 'student_username',
-        },
-        {
             title: 'Rating',
             dataIndex: 'rating',
             key: 'rating',

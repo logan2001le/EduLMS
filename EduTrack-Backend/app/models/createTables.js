@@ -4,7 +4,7 @@ const db = require('../config/db');
 
 const createTables = async () => {
     try {
-        // Tạo bảng "users" nếu chưa tồn tại
+        
         await db.execute(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,7 +22,6 @@ const createTables = async () => {
 
         console.log('Table "users" created or already exists.');
 
-        // Tạo bảng "password_reset_tokens" nếu chưa tồn tại
         await db.execute(`
         CREATE TABLE IF NOT EXISTS password_reset_tokens (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,7 +35,6 @@ const createTables = async () => {
 
         console.log('Table "password_reset_tokens" created or already exists.');
 
-        // Tạo bảng "notifications" nếu chưa tồn tại
         await db.execute(`
          CREATE TABLE IF NOT EXISTS notifications (
             id INT AUTO_INCREMENT PRIMARY KEY,

@@ -143,12 +143,10 @@ const authController = {
         }
     },
 
-    
     createNotification: async (req, res) => {
         try {
             const { title, content, role } = req.body;
-
-            // Tìm tất cả người dùng có vai trò là "resident"
+            // Tìm tất cả người dùng có vai trò là "role"
             const [userRows] = await db.execute('SELECT * FROM users WHERE role = ?', [role]);
 
             // Lưu thông báo vào cơ sở dữ liệu
@@ -156,10 +154,8 @@ const authController = {
                 'INSERT INTO notifications (title, content) VALUES (?, ?)',
                 [title, content]
             );
-
             const notificationId = notificationRows.insertId;
-
-            // Gửi thông báo đến tất cả người dùng có vai trò là "resident"
+            // Gửi thông báo đến tất cả người dùng có vai trò là "role"
             const transporter = nodemailer.createTransport({
                 host: 'smtp-relay.brevo.com',
                 port: '587',
@@ -168,8 +164,6 @@ const authController = {
                     pass: 'fScdnZ4WmEDqjBA1',
                 },
             });
-
-
             for (const user of userRows) {
                 
                 const mailOptions = {
@@ -178,14 +172,12 @@ const authController = {
                     subject: title,
                     text: content,
                 };
-
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
                         console.error(error);
                     }
                 });
             }
-
             res.status(201).json({ message: 'Notification created and sent to residents successfully', status: true });
         } catch (err) {
             console.error(err);

@@ -79,101 +79,101 @@ const ContractDetail = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Class Details</Text>
-            <View style={styles.card}>
-                <Text style={styles.title}>{contract?.title}</Text>
-                <View style={styles.divider} />
-                <Text>{contract?.description}</Text>
-                <Text style={styles.label}>Start Date:</Text>
-                <Text>{contract?.start_date}</Text>
-                <Text style={styles.label}>End Date:</Text>
-                <Text>{contract?.end_date}</Text>
-                <Text style={styles.label}>Description:</Text>
-                <Text>{contract?.description}</Text>
-                {contract?.file_url && (
-                    <Pressable onPress={() => handleViewAttachment(contract.file_url)}>
-                        <Text style={styles.attachment}>View file</Text>
-                    </Pressable>
-                )}
-                <Text style={styles.label}>Value:</Text>
-                <Text style={styles?.value}>Value: {Number(contract?.value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
-                <Pressable onPress={handleJoinClass}>
-                    <Text style={styles.joinButton}>Join Class</Text>
+        <Text style={styles.title}>Class Details</Text>
+        <View style={styles.card}>
+            <Text style={styles.title}>{contract?.title}</Text>
+            <View style={styles.divider} />
+            <Text>{contract?.description}</Text>
+            <Text style={styles.label}>Start Date:</Text>
+            <Text>{contract?.start_date}</Text>
+            <Text style={styles.label}>End Date:</Text>
+            <Text>{contract?.end_date}</Text>
+            <Text style={styles.label}>Description:</Text>
+            <Text>{contract?.description}</Text>
+            {contract?.file_url && (
+                <Pressable onPress={() => handleViewAttachment(contract.file_url)}>
+                    <Text style={styles.attachment}>View file</Text>
                 </Pressable>
-            </View>
-
-            <Text style={styles.title}>Student List</Text>
-            <FlatList
-                data={studentList}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Text style={styles.label}>Student Info:</Text>
-                        <Text>ID: {item.id}</Text>
-                        <Text>Email: {item.email}</Text>
-                        <Text>Phone: {item.phone}</Text>
-                        <Text>Username: {item.username}</Text>
-                    </View>
-                )}
-            />
-
-            <Text style={styles.title}>Review List</Text>
-            <FlatList
-                data={reviewList}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Text style={styles.label}>Review Info:</Text>
-                        <Text>ID: {item.id}</Text>
-                        <Text>Rating: {item.rating}</Text>
-                        <Text>Comment: {item.comment}</Text>
-                    </View>
-                )}
-            />
-
-            {/* Button to show review modal */}
-            <Pressable onPress={() => setShowModal(true)}>
-                <Text style={styles.reviewButton}>Write a Review</Text>
+            )}
+            <Text style={styles.label}>Value:</Text>
+            <Text style={styles?.value}>Value: {Number(contract?.value).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+            <Pressable onPress={handleJoinClass}>
+                <Text style={styles.joinButton}>Join Class</Text>
             </Pressable>
+        </View>
 
-            {/* Review Modal */}
-            <Modal
-                visible={showModal}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setShowModal(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Submit Review</Text>
-                        <Text style={styles.label}>Rating:</Text>
-                        <View style={styles.ratingContainer}>
-                            {[1, 2, 3, 4, 5].map((rate) => (
-                                <Pressable key={rate} onPress={() => setRating(rate)}>
-                                    <Text style={[styles.rating, rating >= rate && styles.selectedRating]}>★</Text>
-                                </Pressable>
-                            ))}
-                        </View>
-                        <Text style={styles.label}>Comment:</Text>
-                        <TextInput
-                            style={styles.commentInput}
-                            multiline
-                            value={comment}
-                            onChangeText={setComment}
-                        /> 
-                        <View style={styles.buttonContainer}>
-                            <Pressable onPress={handleSubmitReview}>
-                                <Text style={styles.submitButton}>Submit Review</Text>
-                            </Pressable>
-                            <Pressable onPress={() => setShowModal(false)}>
-                                <Text style={styles.cancelButton}>Cancel</Text>
-                            </Pressable>
-                        </View>
-
-                    </View>
+        <Text style={styles.title}>Student List</Text>
+        <FlatList
+            data={studentList}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+                <View style={styles.card}>
+                    <Text style={styles.label}>Student Info:</Text>
+                    <Text>ID: {item.id}</Text>
+                    <Text>Email: {item.email}</Text>
+                    <Text>Phone: {item.phone}</Text>
+                    <Text>Username: {item.username}</Text>
                 </View>
-            </Modal>
-        </ScrollView>
+            )}
+        />
+
+        <Text style={styles.title}>Review List</Text>
+        <FlatList
+            data={reviewList}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+                <View style={styles.card}>
+                    <Text style={styles.label}>Review Info:</Text>
+                    <Text>ID: {item.id}</Text>
+                    <Text>Rating: {item.rating}</Text>
+                    <Text>Comment: {item.comment}</Text>
+                </View>
+            )}
+        />
+
+        {/* Button to show review modal */}
+        <Pressable onPress={() => setShowModal(true)}>
+            <Text style={styles.reviewButton}>Write a Review</Text>
+        </Pressable>
+
+        {/* Review Modal */}
+        <Modal
+            visible={showModal}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setShowModal(false)}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Submit Review</Text>
+                    <Text style={styles.label}>Rating:</Text>
+                    <View style={styles.ratingContainer}>
+                        {[1, 2, 3, 4, 5].map((rate) => (
+                            <Pressable key={rate} onPress={() => setRating(rate)}>
+                                <Text style={[styles.rating, rating >= rate && styles.selectedRating]}>★</Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                    <Text style={styles.label}>Comment:</Text>
+                    <TextInput
+                        style={styles.commentInput}
+                        multiline
+                        value={comment}
+                        onChangeText={setComment}
+                    /> 
+                    <View style={styles.buttonContainer}>
+                        <Pressable onPress={handleSubmitReview}>
+                            <Text style={styles.submitButton}>Submit Review</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setShowModal(false)}>
+                            <Text style={styles.cancelButton}>Cancel</Text>
+                        </Pressable>
+                    </View>
+
+                </View>
+            </View>
+        </Modal>
+    </ScrollView>
     );
 };
 

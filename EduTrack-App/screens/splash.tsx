@@ -43,7 +43,7 @@ const Splash = () => {
                             useAngle={true}
                             angle={101.93}
                         />
-                        <Text style={[styles.ngNhp, styles.timeFlexBox]} onPress={() => navigation.navigate('Login')}>đăng nhập</Text>
+                        <Text style={[styles.ngNhp, styles.timeFlexBox]} onPress={() => navigation.navigate('Login')}>Log In</Text>
                     </View>
                    
                     <View style={styles.dotslider}>
@@ -58,10 +58,10 @@ const Splash = () => {
                         />
                     </View>
                     <Text style={[styles.bngCchLa, styles.timeFlexBox]}>
-                        Tối ưu hóa trải nghiệm học tập của sinh viên .
+                    Optimal student learning experience.
                     </Text>
                     <Text style={[styles.giGnSc, styles.timeFlexBox]}>
-                        Thông qua hệ thống quản lý sinh viên.
+                    MyEduTrack
                     </Text>
 
                 </View>

@@ -50,8 +50,6 @@ function DropdownAvatar() {
       </Menu.Item>
     </Menu>
   );
-
-
   return (
     <Dropdown key="avatar" placement="bottomCenter" overlay={avatar} arrow>
       <Row
@@ -77,5 +75,4 @@ function DropdownAvatar() {
     </Dropdown>
   );
 };
-
 export default DropdownAvatar;

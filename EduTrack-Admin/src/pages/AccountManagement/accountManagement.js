@@ -259,7 +259,6 @@ const AccountManagement = () => {
             }
             await axiosClient.post("/user", formatData)
                 .then(response => {
-                    console.log(response)
                     if (response == "User with this phone number already exists") {
                         return message.error('Phone number must be unique');
                     }

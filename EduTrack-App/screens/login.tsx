@@ -5,7 +5,7 @@ import { Border, FontFamily, FontSize, Color } from "../GlobalStyles";
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import config from '../config'; // Đường dẫn đến file config.js
+import config from '../config'; 
 
 const Login = () => {
   const navigation = useNavigation();
@@ -27,11 +27,11 @@ const Login = () => {
       await AsyncStorage.setItem('userId', user.id.toString());
 
       navigation.navigate('Home');
-      Alert.alert('Đăng nhập thành công', "Mời bạn trải nghiệm ứng dụng");
+      Alert.alert('Log In Succesfully', "You can enjoy the app");
 
     } catch (error) {
       console.error(error);
-      Alert.alert('Đăng nhập không thành công', 'Vui lòng kiểm tra lại email và mật khẩu.');
+      Alert.alert('Log In unsuccesfully', 'Please recheck the email and password');
     }
   };
 
@@ -57,11 +57,11 @@ const Login = () => {
           useAngle={true}
           angle={101.93}
         >
-          <Text style={[styles.ngNhp, styles.ngKTiTypo]} onPress={handleLogin}>ĐĂNG NHẬP</Text>
+          <Text style={[styles.ngNhp, styles.ngKTiTypo]} onPress={handleLogin}>LOG IN</Text>
         </LinearGradient>
         <View style={[styles.input, styles.inputLayout]}>
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={[styles.hin, styles.hinTypo]}>{showPassword ? "Ẩn" : "Hiện"}</Text>
+            <Text style={[styles.hin, styles.hinTypo]}>{showPassword ? "Hide" : "Show"}</Text>
           </TouchableOpacity>
           <Image
             style={styles.icPasswordIcon}
@@ -71,7 +71,7 @@ const Login = () => {
           <TextInput
             style={[styles.anatsweet2, styles.bnChaCTypo]}
             secureTextEntry={!showPassword}
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             placeholderTextColor={Color.mediumaquamarine}
             value={password}
             onChangeText={setPassword}
@@ -85,17 +85,17 @@ const Login = () => {
           />
           <TextInput
             style={[styles.anatsweet, styles.bnChaCTypo]}
-            placeholder="Nhập email"
+            placeholder="Enter email"
             placeholderTextColor={Color.mediumaquamarine}
             value={email}
             onChangeText={setEmail}
           />
         </View>
         <Text style={[styles.nhpSTn, styles.hinTypo]}>
-          Nhập số tên tài khoản và mật khẩu để đăng nhập
+          Enter the password and email to sign in
         </Text>
         <Text style={[styles.choMngTr, styles.timeTypo]}>
-          Chào mừng trở lại
+          Welcome Back
         </Text>
       </View>
 

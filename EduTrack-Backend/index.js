@@ -12,7 +12,7 @@ app.use(express.static('public'));
 
 require('./app/models/createTables');
 
-// Thay đổi kết nối cơ sở dữ liệu
+
 const db = mysql.createConnection({
     host: 'localhost', 
     user: 'root',

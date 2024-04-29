@@ -42,12 +42,14 @@ const userController = {
             const cometChatRegion = 'us';
             const cometChatApiKey = 'ad9aac30b6ef3fbae2f89f1f16cea6de9f003846';
 
+
             const cometChatResponse = await axios.post(
                 `https://${cometChatAppId}.api-${cometChatRegion}.cometchat.io/v3/users`,
                 {
-                    uid: username  + phone,
+                    uid: role + phone,
                     name: username,
                     role: "default",
+                   
                 },
                 {
                     headers: {
